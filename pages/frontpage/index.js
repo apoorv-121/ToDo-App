@@ -1,7 +1,7 @@
 // "use client";
 import React, { useState, useEffect } from "react";
 import { auth, db } from "../../firebase";
-import { signOut } from "firebase/auth";
+import { signOut,onAuthStateChanged  } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -116,25 +116,16 @@ const Home = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("auth- ", auth);
-    if (
-      Object.is(auth.currentUser, null) ||
-      Object.is(auth.currentUser, undefined)
-    ) {
-      router.push("/");
-    } else {
-      getData();
-      // toast("Login Successfully !", {
-      //   position: "top-center",
-      //   autoClose: 3000,
-      //   hideProgressBar: false,
-      //   closeOnClick: true,
-      //   pauseOnHover: true,
-      //   draggable: true,
-      //   progress: undefined,
-      //   theme: "light",
-      // });
-    }
+    // console.log("auth- ", auth.currentUser);
+    
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        getData();
+      } else {
+        router.push("/");
+      }
+    });
+
   }, []);
 
   const signOutFromGoogle = () => {
@@ -416,7 +407,7 @@ const Home = () => {
       </Head>
       <div>
         <h1 className="bg-dark text-slate-300 text-center p-4 text-4xl font-bold">
-          {`${auth.currentUser.displayName} Todo List`}
+          {auth.currentUser &&`${auth.currentUser.displayName} Todo List`}
         </h1>
         <div className="row">
           <div className="col col-lg-2">
@@ -469,13 +460,7 @@ const Home = () => {
         </div>
           </div>
         </div>
-        <div>
-       
-         
-          
-          
-
-          
+        <div>          
         </div>
         <hr />
         {/* { loading} */}
