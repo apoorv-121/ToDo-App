@@ -16,6 +16,7 @@ export async function sendMail(subject, toEmail, otpText) {
     html: otpText,
   };
 
+  await new Promise((resolve, reject) => {
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
       throw new Error(error);
@@ -23,5 +24,6 @@ export async function sendMail(subject, toEmail, otpText) {
       console.log("Email Sent");
       return true;
     }
+  });
   });
 }
